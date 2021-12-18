@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 import data from './data';
-import SingleQuestion from './Question';
+import Question from './Question';
 
 function App() {
+
+  const showContainer = () => {
+    console.log('h1')
+  }
 
   return (
     <main>
       <div className='container'>
         <h3>questions and answers about login</h3>
         <section className='info'>
-          {data.map(question => {
-            return <SingleQuestion key={question.id} {...question} />;
+          {data.map((item) => {
+            return <Question showContainer={showContainer} key={item.id} {...item} />; 
           })}
-              
+           
         </section>
       </div>
     </main>
