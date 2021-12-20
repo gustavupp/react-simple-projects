@@ -6,6 +6,7 @@ function App() {
   const [inputValue, SetInputValue] = useState('');
   const [list, setList] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,12 +15,35 @@ function App() {
       //set alert
     } else if (isEditing) {
       //set editing
+      setList(list.map((item) => {
+          if(item.id === editId) {
+            return { ...item, title: inputValue }
+          }
+          return item;
+          })
+        )
+
+        setIsEditing(false);
+        setEditId(null);
+        SetInputValue('');
     } else {
       const newTodo = { id: new Date().getTime().toString(), title: inputValue };
       setList([...list ,newTodo]);
+      SetInputValue('');
     }
   }
  
+  const removeItem = (id) => {
+    //show alert
+    setList(list.filter((item) => item.id !== id));
+  }
+
+  const editItem = (id) => {
+    const specificItem = list.find(item => item.id === id);
+    setIsEditing(true);
+    setEditId(id);
+    SetInputValue(specificItem.title)
+  }
   return (
   <section className='section-center'>
       <form className='grocery-form' onSubmit={handleSubmit} >
@@ -36,13 +60,17 @@ function App() {
           </button>
         </div>
       </form>
-     
-        <div className='grocery-container'>
-          <List list={list} />
-          <button className='clear-btn'>
-            clear items
-          </button>
-        </div>
+          {list.length > 0 && (
+            <div className='grocery-container'>
+            <List list={list} removeItem={removeItem} editItem={editItem} />
+              <button 
+              className='clear-btn'
+              onClick={() => setList([])}
+              >
+                clear items
+              </button>
+            </div>
+          )}
     </section>
     )
 }
