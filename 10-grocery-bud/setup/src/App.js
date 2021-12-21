@@ -4,17 +4,26 @@ import Alert from './Alert'
 
 function App() {
   const [inputValue, SetInputValue] = useState('');
-  const [list, setList] = useState([]);
+  const [list, setList] = useState(localStorage.getItem('list')? JSON.parse(localStorage.getItem('list')): []);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [alert, setAlert] = useState({show: false, msg:'', type:''});
+
+  useEffect(() => {
+    localStorage.setItem('list', JSON.stringify(list));
+  },[list])
+
+  const handleAlert = (show= false, msg= "", type= "") => {
+    setAlert({show, msg, type});
+  };  
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!inputValue) {
-      //set alert
+      handleAlert(true, 'Empty Field', 'danger');
+
     } else if (isEditing) {
-      //set editing
       setList(list.map((item) => {
           if(item.id === editId) {
             return { ...item, title: inputValue }
@@ -22,20 +31,25 @@ function App() {
           return item;
           })
         )
-
         setIsEditing(false);
         setEditId(null);
         SetInputValue('');
+        handleAlert(true, 'Item Saved', 'success');
     } else {
       const newTodo = { id: new Date().getTime().toString(), title: inputValue };
       setList([...list ,newTodo]);
       SetInputValue('');
+      handleAlert(true, 'Item Added', 'success');
     }
   }
  
   const removeItem = (id) => {
-    //show alert
     setList(list.filter((item) => item.id !== id));
+    if (editId === id) {
+      setIsEditing(false);
+      SetInputValue('');
+    }
+    handleAlert(true, 'Item Deleted', 'danger');
   }
 
   const editItem = (id) => {
@@ -47,6 +61,7 @@ function App() {
   return (
   <section className='section-center'>
       <form className='grocery-form' onSubmit={handleSubmit} >
+        {alert.show && <Alert {...alert} handleAlert={handleAlert}/>}
         <h3>grocery bud</h3>
         <div className='form-control'>
           <input
@@ -56,16 +71,21 @@ function App() {
             value={inputValue}
             onChange={(e) => SetInputValue(e.target.value)}
           />
-          <button type='submit' className='submit-btn'> Submit
+          <button type='submit' className='submit-btn'>{isEditing? 'Save' : 'Submit'}
           </button>
         </div>
       </form>
-          {list.length > 0 && (
+          {
+          list.length > 0 && (
             <div className='grocery-container'>
             <List list={list} removeItem={removeItem} editItem={editItem} />
               <button 
               className='clear-btn'
-              onClick={() => setList([])}
+              onClick={() => { 
+                setList([]); 
+                handleAlert(true, 'list Cleared', 'danger'); 
+              } 
+            }
               >
                 clear items
               </button>
