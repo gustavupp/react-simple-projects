@@ -10,7 +10,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const linksUlHeight = linksUl.current.getBoundingClientRect().height;
-
+    
     if (showContainer) {
       linksContainer.current.style.height = `${linksUlHeight}px`;
     } else {
@@ -41,9 +41,7 @@ const Navbar = () => {
             })
           }
           </ul>
-        </div>
-
-        <ul className='social-icons'>
+          <ul className='social-icons'>
           {
             social.map((item) => {
               const { id, url, icon } = item;
@@ -55,6 +53,9 @@ const Navbar = () => {
             })
           }
         </ul>
+        </div>
+
+        
       </div>
     </nav>
   )
