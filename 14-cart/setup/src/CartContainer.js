@@ -3,7 +3,9 @@ import CartItem from './CartItem'
 import { useGlobalContext } from './context'
 
 const CartContainer = () => {
-  const { cart } = useGlobalContext()
+  const { cart, clearCart } = useGlobalContext()
+ 
+  //case the cart is empty, render this 
   if (cart.length === 0) {
     return (
       <section className='cart'>
@@ -15,6 +17,8 @@ const CartContainer = () => {
       </section>
     )
   }
+
+  //otherwise render this
   return (
     <section className='cart'>
       {/* cart header */}
@@ -37,7 +41,7 @@ const CartContainer = () => {
         </div>
         <button
           className='btn clear-btn'
-          onClick={() => console.log('clear cart')}
+          onClick={clearCart}
         >
           clear cart
         </button>
