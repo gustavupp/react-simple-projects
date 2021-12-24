@@ -274,8 +274,18 @@ Stripe Styles
     display: block;
     justify-self: center;
   }
-  .phone-img {
+
+  figure {
+    perspective: 600px;
+  }
+
+  figure .phone-img {
+    transform: rotateX(10deg) rotateY(-30deg) rotateZ(3deg);
     width: 12rem;
+    transition: 1s;
+  }
+  figure .phone-img:hover {
+    transform: rotate(0);
   }
 }
 
@@ -292,7 +302,7 @@ Stripe Styles
   .hero-images {
     align-self: end;
   }
-  .phone-img {
+  figure.phone-img {
     width: 15rem;
   }
 }
@@ -300,7 +310,7 @@ Stripe Styles
   .hero-center {
     padding-bottom: 20vh;
   }
-  .phone-img {
+  figure.phone-img {
     width: 17rem;
   }
 }
