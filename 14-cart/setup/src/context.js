@@ -41,6 +41,19 @@ const AppProvider = ({ children }) => {
     dispatch({ type: 'REMOVE_ITEM', payload: id});
   }
 
+  //updates the total amount of items in the cart every time the cart changes
+  useEffect(() => {
+    getTotalAmount();
+  },[state.cart])
+
+  //gets the total amount of items in the cart
+  const getTotalAmount = () => {
+    let totalAmounts = state.cart.reduce((acc, curr) => {
+      return acc += curr.amount
+    },0)
+      dispatch({ type: 'UPDATE_TOTAL_AMOUNT', payload: totalAmounts });
+    }
+
   //fetch the data from the API on the first rendering.
   useEffect(() => {
     fetchData();
@@ -54,7 +67,8 @@ const AppProvider = ({ children }) => {
           total: state.total,
           totalAmount: state.totalAmount, 
           addItem,
-          removeItem
+          removeItem,
+          removeItemBtn
         }}
     >
       {children}
