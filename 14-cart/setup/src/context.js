@@ -14,6 +14,13 @@ const initialState = {
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  //fetch the data from the API on the first rendering.
+  useEffect(() => {
+    fetchData();
+  },[])
+
+
+  //fecth data function
   const fetchData = async () => {
     dispatch({ type: 'LOADING' });
     const response = await fetch(url);
@@ -26,38 +33,22 @@ const AppProvider = ({ children }) => {
     dispatch({ type: 'CLEAR_CART' });
   }
 
+  //removes the selected item from the cart
   const removeItemBtn = (id) => {
     const newCart = state.cart.filter((item) => item.id !== id)
     dispatch({ type: 'REMOVE_ITEM_BTN', payload: newCart })
   }
 
-  //add amount of each clicked item
-  const addItem = (id) => {
-    dispatch({ type: 'ADD_ITEM', payload: id});
+  //single call for decreasing or increasing the amount of the same items in the cart
+  const addOrRemoveItem = (id, type) => {
+    dispatch({ type: 'ADD_OR_REMOVE_ITEM', payload: { id, type } })
   }
 
-  //decrease the amount of each clicked item
-  const removeItem = (id) => {
-    dispatch({ type: 'REMOVE_ITEM', payload: id});
-  }
-
-  //updates the total amount of items in the cart every time the cart changes
+  //updates the total amount of items and total Value amount in the cart every time the cart changes
   useEffect(() => {
-    getTotalAmount();
+      dispatch({ type: 'UPDATE_TOTAL_AMOUNT'})
   },[state.cart])
-
-  //gets the total amount of items in the cart
-  const getTotalAmount = () => {
-    let totalAmounts = state.cart.reduce((acc, curr) => {
-      return acc += curr.amount
-    },0)
-      dispatch({ type: 'UPDATE_TOTAL_AMOUNT', payload: totalAmounts });
-    }
-
-  //fetch the data from the API on the first rendering.
-  useEffect(() => {
-    fetchData();
-  },[])
+  
 
   return (
     <AppContext.Provider
@@ -66,9 +57,8 @@ const AppProvider = ({ children }) => {
           clearCart,
           total: state.total,
           totalAmount: state.totalAmount, 
-          addItem,
-          removeItem,
-          removeItemBtn
+          removeItemBtn,
+          addOrRemoveItem
         }}
     >
       {children}
